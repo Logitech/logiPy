@@ -1,44 +1,41 @@
-LogiPy
-======
+import sys
+import os
 
-This package is a python wrapper for [Logitech Gs LED and Arx SDKs](http://gaming.logitech.com/en-us/developers)
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-Use the LED SDK to get access to all of the LED backlighting and RGB capabilities of Logitech G products. Integrate profiles for custom key configurations, develop in-game effects, or mark keys to keep track of cool downs on various commands
 
-Arx Control introduces second screen capability that allows iOS and Android mobile devices to display in-game info, vital system statistics and more. The associated SDK enables integration of your code with the Arx Control app.
+# LED snippets
+##############
 
-###LED Examples
-Set all device lighting to red:
-
-```
+# Set all device lighting to red
 from logipy import logi_led
 import time
 import ctypes
 
+print ('Setting all device lighting to red...')
 logi_led.logi_led_init()
 time.sleep(1) # Give the SDK a second to initialize
 logi_led.logi_led_set_lighting(100, 0, 0)
+raw_input('Press enter to shutdown SDK...')
 logi_led.logi_led_shutdown()
-```
 
-Or if you prefer the c/c++ style you can use the LED DLL directly:
-```
-from logipy import logi_led
-import time
-import ctypes
-
+# If you prefer the c/c++ style you can use the DLL directly
+print ('Setting all device lighting to green...')
 logi_led.led_dll.LogiLedInit()
 time.sleep(1) # Give the SDK a second to initialize
 logi_led.led_dll.LogiLedSetLighting(ctypes.c_int(0), ctypes.c_int(100), ctypes.c_int(0))
+raw_input('Press enter to shutdown SDK...')
 logi_led.led_dll.LogiLedShutdown()
-```
 
-###Arx Examples:
-Show a simple applet with the default callback:
-```
+
+# Arx snippets
+##############
+
+# Show a simple applet with the default callback
+# note: will not work if a callback has already been defined by the process
 from logipy import logi_arx
 import time
-
+print 'Setting up a simple applet...'
 index = """
     <html>
     <head>
@@ -64,20 +61,20 @@ css = """
 	    margin-left: -59px;
     }
     """
-logi_arx.logi_arx_init("com.logitech.gaming.logipy", "LogiPy")
+logi_arx.logi_arx_init('com.logitech.gaming.logipy', 'LogiPy')
 time.sleep(1)
-logi_arx.logi_arx_add_utf8_string_as(index, "index.html", "text/html")
-logi_arx.logi_arx_add_utf8_string_as(css, "style.css", "text/css")
-logi_arx.logi_arx_set_index("index.html")
+logi_arx.logi_arx_add_utf8_string_as(index, 'index.html', 'text/html')
+logi_arx.logi_arx_add_utf8_string_as(css, 'style.css', 'text/css')
+logi_arx.logi_arx_set_index('index.html')
+raw_input('Press enter to shutdown SDK...')
 logi_led.logi_led_shutdown()
-```
 
-Show a simple applet with a custom callback:
-``
+# Show a simple applet with a custom callback
 from logipy import logi_arx
 import time
 import ctypes
 
+print 'Setting up a simple applet with custom callback...'
 index = """
     <html>
     <head>
@@ -105,13 +102,12 @@ css = """
     """
 def custom_callback(event_type, event_value, event_arg, context):
     if event_arg and event_arg == 'splash-icon':
-        print "\nNo wonder Logitech is called Logicool in Japan! They are so cool!"
+        print '\nNo wonder Logitech is called Logicool in Japan! They are so cool!'
 
-logi_arx.logi_arx_init("com.logitech.gaming.logipy", "LogiPy", custom_callback)
+logi_arx.logi_arx_init('com.logitech.gaming.logipy', 'LogiPy', custom_callback)
 time.sleep(1)
-logi_arx.logi_arx_add_utf8_string_as(index, "index.html", "text/html")
-logi_arx.logi_arx_add_utf8_string_as(css, "style.css", "text/css")
-logi_arx.logi_arx_set_index("index.html")
+logi_arx.logi_arx_add_utf8_string_as(index, 'index.html', 'text/html')
+logi_arx.logi_arx_add_utf8_string_as(css, 'style.css', 'text/css')
+logi_arx.logi_arx_set_index('index.html')
+raw_input('Press enter to shutdown SDK...')
 logi_led.logi_led_shutdown()
-```
-``

@@ -1,0 +1,37 @@
+# Ignore Python binaries
+*.pyc
+
+# Ignore any Surround SCM files
+.MySCMServerInfo
+
+# Ignore MOC files
+*.inl
+AutoMocGenerator.mak
+
+# Ignore Visual Studio files
+*.ncb
+*.vspscc
+*.obj
+*.pdb
+*.idb
+*.embed.manifest
+*.qch
+*.qm
+*.vcproj.*.user
+BuildLog.htm*
+*.suo
+*.opensdf
+*.log
+*.sdf
+*.vcxproj.user
+*.cod
+*.bak
+*.aps
+
+# Ignoring Win * Thumbnail Files
+Thumbs.db
+.DS_Store
+
+# Ignore misc files
+.pypirc
+PYPI.txt
