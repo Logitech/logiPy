@@ -73,7 +73,7 @@ logi_led.logi_led_shutdown()
 ```
 
 Show a simple applet with a custom callback:
-``
+```
 from logipy import logi_arx
 import time
 import ctypes
@@ -114,4 +114,3 @@ logi_arx.logi_arx_add_utf8_string_as(css, "style.css", "text/css")
 logi_arx.logi_arx_set_index("index.html")
 logi_led.logi_led_shutdown()
 ```
-``
