@@ -1,9 +1,9 @@
 LogiPy
 ======
 
-This package is a python wrapper for [Logitech Gs LED and Arx SDKs](http://gaming.logitech.com/en-us/developers)
+This package is a python wrapper for [Logitech G's LED and Arx SDKs](http://gaming.logitech.com/en-us/developers).
 
-Use the LED SDK to get access to all of the LED backlighting and RGB capabilities of Logitech G products. Integrate profiles for custom key configurations, develop in-game effects, or mark keys to keep track of cool downs on various commands
+Use the LED SDK to get access to all of the LED backlighting and RGB capabilities of Logitech G products. Integrate profiles for custom key configurations, develop in-game effects, or mark keys to keep track of cool downs on various commands.
 
 Arx Control introduces second screen capability that allows iOS and Android mobile devices to display in-game info, vital system statistics and more. The associated SDK enables integration of your code with the Arx Control app.
 
@@ -33,7 +33,7 @@ logi_led.led_dll.LogiLedSetLighting(ctypes.c_int(0), ctypes.c_int(100), ctypes.c
 logi_led.led_dll.LogiLedShutdown()
 ```
 
-###Arx Examples:
+###Arx Examples
 Show a simple applet with the default callback:
 ```
 from logipy import logi_arx
@@ -112,5 +112,5 @@ time.sleep(1)
 logi_arx.logi_arx_add_utf8_string_as(index, "index.html", "text/html")
 logi_arx.logi_arx_add_utf8_string_as(css, "style.css", "text/css")
 logi_arx.logi_arx_set_index("index.html")
-logi_led.logi_led_shutdown()
+logi_arx.logi_arx_shutdown()
 ```
