@@ -83,7 +83,7 @@ Show a simple applet with the default callback:
     logi_arx.logi_arx_add_utf8_string_as(index, "index.html", "text/html")
     logi_arx.logi_arx_add_utf8_string_as(css, "style.css", "text/css")
     logi_arx.logi_arx_set_index("index.html")
-    logi_led.logi_led_shutdown()
+    logi_arx.logi_arx_shutdown()
 
 Show a simple applet with a custom callback:
 
