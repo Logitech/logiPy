@@ -316,7 +316,7 @@ def logi_led_flash_single_key(key_name, red_percentage, green_percentage, blue_p
         blue_percentage  = ctypes.c_int(blue_percentage)
         ms_duration      = ctypes.c_int(ms_duration)
         ms_interval      = ctypes.c_int(ms_interval)
-        return bool(led_dll.LogiLedFlashLighting(key_name, red_percentage, green_percentage, blue_percentage, ms_duration, ms_interval))
+        return bool(led_dll.LogiLedFlashSingleKey(key_name, red_percentage, green_percentage, blue_percentage, ms_duration, ms_interval))
     else:
         return False
 
@@ -335,7 +335,7 @@ def logi_led_pulse_single_key(key_name, red_percentage_start, green_percentage_s
         blue_percentage_end    = ctypes.c_int(blue_percentage_end)
         ms_duration            = ctypes.c_int(ms_duration)
         is_infinite            = ctypes.c_bool(is_infinite)
-        return bool(led_dll.LogiLedPulseLighting(key_name, red_percentage_start, green_percentage_start, blue_percentage_start, red_percentage_end, green_percentage_end, blue_percentage_end, ms_duration, is_infinite))
+        return bool(led_dll.LogiLedPulseSingleKey(key_name, red_percentage_start, green_percentage_start, blue_percentage_start, red_percentage_end, green_percentage_end, blue_percentage_end, ms_duration, is_infinite))
     else:
         return False
 
