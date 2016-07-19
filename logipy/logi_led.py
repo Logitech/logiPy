@@ -10,6 +10,7 @@ Email: devtechsupport@logitech.com
 
 import ctypes
 import os
+import platform
 
 # DLL Definitions
 #
@@ -144,7 +145,8 @@ class SDKNotFoundException:
 
 def load_dll(path_dll = None):
     if not path_dll:
-        subpath_dll = r'/Logitech Gaming Software/SDK/LED/x86/LogitechLed.dll'
+        bitness = 'x86' if platform.architecture()[0] == '32bit' else 'x64'
+        subpath_dll = r'/Logitech Gaming Software/SDK/LED/{}/LogitechLed.dll'.format(bitness)
         subpath_lgs = os.environ['ProgramW6432'] if os.environ['ProgramW6432'] else os.environ['ProgramFiles']
         path_dll = subpath_lgs + subpath_dll
     if os.path.exists(path_dll):
