@@ -237,9 +237,9 @@ def logi_led_stop_effects():
 def logi_led_set_lighting_from_bitmap(bitmap):
     """ sets the color of each key in a 21x6 rectangular area specified by the BGRA byte array bitmap. each element corresponds to the physical location of each key.
         note that the color bit order is BGRA rather than standard RGBA bit order. this function only applies to LOGI_DEVICETYPE_PERKEY_RGB devices. """
-    if arx_dll:
+    if led_dll:
         bitmap = ctypes.c_char_p(bitmap)
-        return bool(arx_dll.LogiLedSetLightingFromBitmap(bitmap))
+        return bool(led_dll.LogiLedSetLightingFromBitmap(bitmap))
     else:
         return False
 
