@@ -43,6 +43,32 @@ Or if you prefer the c/c++ style you can use the LED DLL directly:
     logi_led.led_dll.LogiLedSetLighting(ctypes.c_int(0), ctypes.c_int(100), ctypes.c_int(0))
     logi_led.led_dll.LogiLedShutdown()
 
+Load user configured settings for your LED effects:
+
+::
+
+    from logipy import logi_led
+    import time
+    import ctypes
+
+    logi_led.led_dll.LogiLedInit()
+    time.sleep(1) # Give the SDK a second to initialize
+
+    effect_enabled = logi_led.logi_led_get_config_option_bool('effect/enabled', True) # Use a default value if not found
+    effect_duration = logi_led.logi_led_get_config_option_number('effect/duration', 5)
+    effect_color = logi_led.logi_led_get_config_option_color('effect/color', Color(0, 255, 0))
+
+    logi_led.logi_led_set_config_option_label('effect', 'Effect Settings')
+    logi_led.logi_led_set_config_option_label('effect/enabled', 'Enabled')
+    logi_led.logi_led_set_config_option_label('effect/duration', 'Duration in seconds')
+    logi_led.logi_led_set_config_option_label('effect/color', 'Color')
+
+    if effect_enabled:
+        logi_led.logi_led_set_lighting(*effect_color.rgb_percent())
+        time.sleep(effect_duration)
+
+    logi_led.led_dll.LogiLedShutdown()
+
 Arx Examples
 ------------
 

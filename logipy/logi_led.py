@@ -11,6 +11,69 @@ Email: devtechsupport@logitech.com
 import ctypes
 import os
 import platform
+import struct
+
+# Helpers
+#
+class Color:
+    """ an RGBA color object that can be created using RGB, RGBA, color name, or a hex_code. """
+    def __init__(self, *args, **kwargs):
+        red, green, blue, alpha = 0, 0, 0, 255
+        hex_code = None
+        if len(args) > 0:
+            if isinstance(args[0], int):
+                red, green, blue = args[0], args[1], args[2]
+                if len(args) > 3:
+                    alpha = args[3]
+            elif isinstance(args[0], str):
+                if len(args) > 1:
+                    alpha = args[1]
+                if args[0] == 'red':
+                    red, green, blue = 255, 0, 0
+                elif args[0] == 'orange':
+                    red, green, blue = 255, 165, 0
+                elif args[0] == 'yellow':
+                    red, green, blue = 255, 255, 0
+                elif args[0] == 'green':
+                    red, green, blue = 0, 255, 0
+                elif args[0] == 'blue':
+                    red, green, blue = 0, 0, 255
+                elif args[0] == 'indigo':
+                    red, green, blue = 75, 0, 130
+                elif args[0] == 'violet':
+                    red, green, blue = 238, 130, 238
+                elif args[0] == 'cyan':
+                    red, green, blue = 0, 220, 255
+                elif args[0] == 'pink':
+                    red, green, blue = 255, 0, 255
+                elif args[0] == 'purple':
+                    red, green, blue = 128, 0, 255
+                elif args[0] == 'white':
+                    red, green, blue = 255, 255, 255
+                elif args[0] == 'black':
+                    red, green, blue = 0, 0, 0
+                else:
+                    hex_code = args[0]
+                    hex_code = kwargs.pop('hex', hex_code)
+        if hex_code:
+            hex_code = hex_code.replace('#', '')
+            self.red, self.green, self.blue = struct.unpack('BBB', hex_code.decode('hex'))
+            self.alpha = alpha
+        elif any(x in ['red', 'blue', 'green', 'alpha'] for x in kwargs):
+            self.red = kwargs.pop('red', red)
+            self.green = kwargs.pop('green', green)
+            self.blue = kwargs.pop('blue', blue)
+            self.alpha = kwargs.pop('alpha', alpha)
+        else:
+            self.red = red
+            self.green = green
+            self.blue = blue
+            self.alpha = alpha
+        self.hex_code = '#{h}'.format(h=struct.pack('BBB', *(self.red, self.green, self.blue)).encode('hex'))
+
+    def rgb_percent(self):
+        return int((self.red / 255.0) * 100), int((self.green / 255.0) * 100), int((self.blue / 255.0) * 100)
+
 
 # DLL Definitions
 #
@@ -151,6 +214,8 @@ LOGI_DEVICETYPE_ALL             = LOGI_DEVICETYPE_MONOCHROME | LOGI_DEVICETYPE_R
 
 # Required Globals
 #
+_LOGI_SHARED_SDK_LED            = ctypes.c_int(1)
+
 class SDKNotFoundException:
     pass
 
@@ -364,5 +429,88 @@ def logi_led_shutdown():
     """ shutdowns the SDK for the thread. """
     if led_dll:
         return bool(led_dll.LogiLedShutdown())
+    else:
+        return False
+
+def logi_led_get_config_option_number(key, default=0):
+    """ get the default value for the key as a number. if the call fails, the return value is None.
+
+         for example, get the low health threshold:
+          logi_led_get_config_option_number('health/low_health_threshold', 20.0) """
+    if led_dll:
+        key     = ctypes.c_wchar_p(key)
+        default = ctypes.c_double(default)
+        if led_dll.LogiGetConfigOptionNumber(key, ctypes.pointer(default), _LOGI_SHARED_SDK_LED):
+            return default.value
+    return None
+
+def logi_led_get_config_option_bool(key, default=False):
+    """ get the default value for the key as a bool. if the call fails, the return value is None.
+
+         for example, check if the effect is enabled:
+          logi_led_get_config_option_bool('health/pulse_on_low', True) """
+    if led_dll:
+        key     = ctypes.c_wchar_p(key)
+        default = ctypes.c_bool(default)
+        if led_dll.LogiGetConfigOptionBool(key, ctypes.pointer(default), _LOGI_SHARED_SDK_LED):
+            return default.value
+    return None
+
+def logi_led_get_config_option_color(key, *args):
+    """ get the default value for the key as a color. if the call fails, the return value is None.
+         note this function can either be called with red_percentage, green_percentage, and blue_percentage or with the logi_led Color object.
+
+        for example, get the low health color:
+         logi_led_get_config_option_color('health/pulse_color', 100, 0, 0)
+         logi_led_get_config_option_color('health/pulse_color', Color('red'))
+         logi_led_get_config_option_color('health/pulse_color', Color('#ff0000'))
+         logi_led_get_config_option_color('health/pulse_color', Color(255, 0, 0)) """
+    if led_dll:
+        key              = ctypes.c_wchar_p(key)
+        default          = None
+        red_percentage   = 0
+        green_percentage = 0
+        blue_percentage  = 0
+        if isinstance(args[0], Color):
+            default = args[0]
+        else:
+            red_percentage   = args[0]
+            green_percentage = args[1]
+            blue_percentage  = args[2]
+        if default:
+            red   = ctypes.c_int(default.red)
+            green = ctypes.c_int(default.green)
+            blue  = ctypes.c_int(default.blue)
+        else:
+            red   = ctypes.c_int(int((red_percentage / 100.0) * 255))
+            green = ctypes.c_int(int((green_percentage / 100.0) * 255))
+            blue  = ctypes.c_int(int((blue_percentage / 100.0) * 255))
+        if led_dll.LogiGetConfigOptionColor(key, ctypes.pointer(red), ctypes.pointer(green), ctypes.pointer(blue), _LOGI_SHARED_SDK_LED):
+            return Color(red.value, green.value, blue.value)
+    return None
+
+def logi_led_get_config_option_key_input(key, default=''):
+    """ get the default value for the key as a key input. if the call fails, the return value is None.
+
+        for example, get the primary ability key input:
+         logi_led_get_config_option_key_input('abilities/primary', 'A') """
+    if led_dll:
+        key               = ctypes.c_wchar_p(key)
+        default_key       = ctypes.create_string_buffer(256)
+        default_key.value = default
+        if led_dll.LogiGetConfigOptionKeyInput(key, default_key, _LOGI_SHARED_SDK_LED):
+            return str(default_key.value)
+    return None
+
+def logi_led_set_config_option_label(key, label):
+    """ set the label for a key.
+
+        for example, label 'health/pulse_on_low' as 'Health - Pulse on Low':
+         logi_led_set_config_option_label('health', 'Health')
+         logi_led_set_config_option_label('health/pulse_on_low', 'Pulse on Low') """
+    if led_dll:
+        key   = ctypes.c_wchar_p(key)
+        label = ctypes.c_wchar_p(label)
+        return bool(led_dll.LogiSetConfigOptionLabel(key, label, _LOGI_SHARED_SDK_LED))
     else:
         return False
