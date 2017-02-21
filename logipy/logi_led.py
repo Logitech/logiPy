@@ -223,7 +223,10 @@ def load_dll(path_dll = None):
     if not path_dll:
         bitness = 'x86' if platform.architecture()[0] == '32bit' else 'x64'
         subpath_dll = r'/Logitech Gaming Software/SDK/LED/{}/LogitechLed.dll'.format(bitness)
-        subpath_lgs = os.environ['ProgramW6432'] if os.environ['ProgramW6432'] else os.environ['ProgramFiles']
+        try:
+            subpath_lgs = os.environ['ProgramW6432']
+        except KeyError:
+            subpath_lgs = os.environ['ProgramFiles']
         path_dll = subpath_lgs + subpath_dll
     if os.path.exists(path_dll):
         return ctypes.cdll.LoadLibrary(path_dll)
