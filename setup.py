@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name = 'logipy',
-    version = '1.2.1',
+    version = '1.3.1',
     author = 'Tom Lambert',
     author_email = 'devtechsupport@logitech.com',
     description = ('A simple python wrapper for Logitech G\'s LED and Arx SDKs.'),
