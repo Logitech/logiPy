@@ -68,7 +68,6 @@ def load_dll(path_dll = None):
             subpath_lgs = os.environ['ProgramW6432']
         except KeyError:
             subpath_lgs = os.environ['ProgramFiles']
-        subpath_lgs = os.environ['ProgramW6432'] if os.environ['ProgramW6432'] else os.environ['ProgramFiles']
         path_dll = subpath_lgs + subpath_dll
     if os.path.exists(path_dll):
         return ctypes.cdll.LoadLibrary(path_dll)
