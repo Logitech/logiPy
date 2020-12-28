@@ -222,7 +222,7 @@ class SDKNotFoundException:
 def load_dll(path_dll = None):
     if not path_dll:
         bitness = 'x86' if platform.architecture()[0] == '32bit' else 'x64'
-        subpath_dll = r'/LGHUB/sdk_legacy_led_{}'.format(bitness)
+        subpath_dll = r'/LGHUB/sdk_legacy_led_{}.dll'.format(bitness)
         try:
             subpath_lgs = os.environ['ProgramW6432']
         except KeyError:
