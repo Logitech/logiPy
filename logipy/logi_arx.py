@@ -63,7 +63,7 @@ class SDKNotFoundException:
 def load_dll(path_dll = None):
     if not path_dll:
         bitness = 'x86' if platform.architecture()[0] == '32bit' else 'x64'
-        subpath_dll = r'/Logitech Gaming Software/SDK/Arx Control/{}/LogitechGArxControl.dll'.format(bitness)
+        subpath_dll = r'/LGHUB/legacy_arx_control_sdk_{}.dll'.format(bitness)
         try:
             subpath_lgs = os.environ['ProgramW6432']
         except KeyError:
