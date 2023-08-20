@@ -243,10 +243,7 @@ except SDKNotFoundException as exception_sdk:
 #
 def logi_led_init():
     """ initializes the sdk for the current thread. """
-    if led_dll:
-        return bool(led_dll.LogiLedInit())
-    else:
-        return False
+    return bool(led_dll.LogiLedInit()) if led_dll else False
 
 def logi_led_set_target_device(target_device):
     """ sets the target device or device group that is affected by the subsequent lighting calls. """
@@ -258,17 +255,11 @@ def logi_led_set_target_device(target_device):
 
 def logi_led_save_current_lighting():
     """ saves the current lighting that can be restored later. """
-    if led_dll:
-        return bool(led_dll.LogiLedSaveCurrentLighting())
-    else:
-        return False
+    return bool(led_dll.LogiLedSaveCurrentLighting()) if led_dll else False
 
 def logi_led_restore_lighting():
     """ restores the last saved lighting. """
-    if led_dll:
-        return bool(led_dll.LogiLedRestoreLighting())
-    else:
-        return False
+    return bool(led_dll.LogiLedRestoreLighting()) if led_dll else False
 
 def logi_led_set_lighting(red_percentage, green_percentage, blue_percentage):
     """ sets the lighting to the color of the combined RGB percentages. note that RGB ranges from 0-255, but this function ranges from 0-100. """
@@ -308,10 +299,7 @@ def logi_led_pulse_lighting(red_percentage, green_percentage, blue_percentage, m
 
 def logi_led_stop_effects():
     """ stops the pulse and flash effects. """
-    if led_dll:
-        return bool(led_dll.LogiLedStopEffects())
-    else:
-        return False
+    return bool(led_dll.LogiLedStopEffects()) if led_dll else False
 
 def logi_led_set_lighting_from_bitmap(bitmap):
     """ sets the color of each key in a 21x6 rectangular area specified by the BGRA byte array bitmap. each element corresponds to the physical location of each key.
@@ -372,11 +360,7 @@ def logi_led_set_lighting_for_key_with_key_name(key_name, red_percentage, green_
 
 def logi_led_save_lighting_for_key(key_name):
     """ saves the current lighting for the specified key name that can be restored later. this function only applies to LOGI_DEVICETYPE_PERKEY_RGB devices. """
-    if led_dll:
-        key_name = ctypes.c_int(key_name)
-        return bool(led_dll.LogiLedSaveLightingForKey(key_name))
-    else:
-        return False
+    return bool(led_dll.LogiLedSaveLightingForKey(key_name)) if led_dll else return False
 
 def logi_led_restore_lighting_for_key(key_name):
     """ restores the last saved lighting for the specified key name. this function only applies to LOGI_DEVICETYPE_PERKEY_RGB devices. """
@@ -430,10 +414,7 @@ def logi_led_stop_effects_on_key(key_name):
 
 def logi_led_shutdown():
     """ shutdowns the SDK for the thread. """
-    if led_dll:
-        return bool(led_dll.LogiLedShutdown())
-    else:
-        return False
+    return bool(led_dll.LogiLedShutdown()) if led_dll else return False
 
 def logi_led_get_config_option_number(key, default=0):
     """ get the default value for the key as a number. if the call fails, the return value is None.
@@ -480,14 +461,11 @@ def logi_led_get_config_option_color(key, *args):
             red_percentage   = args[0]
             green_percentage = args[1]
             blue_percentage  = args[2]
-        if default:
-            red   = ctypes.c_int(default.red)
-            green = ctypes.c_int(default.green)
-            blue  = ctypes.c_int(default.blue)
-        else:
-            red   = ctypes.c_int(int((red_percentage / 100.0) * 255))
-            green = ctypes.c_int(int((green_percentage / 100.0) * 255))
-            blue  = ctypes.c_int(int((blue_percentage / 100.0) * 255))
+
+        red = ctypes.c_int(default.red) if default else ctypes.c_int(int((red_percentage / 100.0) * 255))
+        green = ctypes.c_int(default.green) if default else ctypes.c_int(int((green_percentage / 100.0) * 255))
+        blue = ctypes.c_int(default.blue) if default else ctypes.c_int(int((blue_percentage / 100.0) * 255))
+
         if led_dll.LogiGetConfigOptionColor(key, ctypes.pointer(red), ctypes.pointer(green), ctypes.pointer(blue), _LOGI_SHARED_SDK_LED):
             return Color(red.value, green.value, blue.value)
     return None
